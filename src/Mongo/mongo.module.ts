@@ -1,8 +1,9 @@
-import { Module, Scope } from '@nestjs/common';
+import { Global, Module, Scope } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DATABASE_CONNECTION_TOKEN } from './constants';
 import mongoose from 'mongoose';
 
+@Global()
 @Module({
   providers: [
     {

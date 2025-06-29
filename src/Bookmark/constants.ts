@@ -1,0 +1,1 @@
+export const BOOKMARK_MODEL = 'BOOKMARK_MODEL';

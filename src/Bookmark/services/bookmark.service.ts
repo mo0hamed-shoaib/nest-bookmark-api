@@ -19,9 +19,9 @@ export class BookmarkService {
     @Inject(BookmarkRepository)
     private readonly bookmarkRepository: BookmarkRepository,
   ) {}
-  async getBookmarks(): Promise<BookmarkResponseDto[]> {
+  async getBookmarks(userId: string): Promise<BookmarkResponseDto[]> {
     const [error, results] = await tryToCatch(async () => {
-      const bookmarks = await this.bookmarkRepository.findAllBookmarks();
+      const bookmarks = await this.bookmarkRepository.findAllBookmarks(userId);
       return bookmarks.map(this._transformToResponse);
     });
 
@@ -30,9 +30,9 @@ export class BookmarkService {
     return results;
   }
 
-  async getBookmarkById(id: string): Promise<BookmarkResponseDto> {
+  async getBookmarkById(id: string, userId: string): Promise<BookmarkResponseDto> {
     const [error, result] = await tryToCatch(async () => {
-      const bookmark = await this.bookmarkRepository.findById(id);
+      const bookmark = await this.bookmarkRepository.findById(id, userId);
       if (!bookmark)
         throw new NotFoundException(
           `[getBookmarkById] bookmark with ${id} not found`,
@@ -47,6 +47,7 @@ export class BookmarkService {
 
   async createBookmark(
     createBookmarkDto: CreateBookmarkDto,
+    userId: string,
   ): Promise<BookmarkResponseDto> {
     const [error, result] = await tryToCatch(async () => {
       const bookmarkData: Bookmark = {
@@ -54,6 +55,7 @@ export class BookmarkService {
         title: createBookmarkDto.title,
         description: createBookmarkDto.description,
         tags: createBookmarkDto.tags,
+        userId,
       };
       const bookmark =
         await this.bookmarkRepository.createBookmark(bookmarkData);
@@ -68,11 +70,13 @@ export class BookmarkService {
   async updateBookmark(
     id: string,
     updateBookmarkDto: UpdateBookmarkDto,
+    userId: string,
   ): Promise<BookmarkResponseDto> {
     const [error, result] = await tryToCatch(async () => {
       const bookmark = await this.bookmarkRepository.updateBookmark(
         id,
         updateBookmarkDto,
+        userId,
       );
       if (!bookmark) {
         throw new NotFoundException(`Bookmark with ID ${id} not found`);
@@ -85,9 +89,9 @@ export class BookmarkService {
     return result;
   }
 
-  async deleteBookmark(id: string) {
+  async deleteBookmark(id: string, userId: string) {
     const [error, result] = await tryToCatch(async () => {
-      const bookmark = await this.bookmarkRepository.deleteBookmark(id);
+      const bookmark = await this.bookmarkRepository.deleteBookmark(id, userId);
       if (!bookmark)
         throw new NotFoundException(
           `[deleteBookmark] bookmark with ${id} not found`,
@@ -100,9 +104,9 @@ export class BookmarkService {
     return result;
   }
 
-  async getBookmarksByTag(tagName: string): Promise<BookmarkResponseDto[]> {
+  async getBookmarksByTag(tagName: string, userId: string): Promise<BookmarkResponseDto[]> {
     const [error, results] = await tryToCatch(async () => {
-      const bookmarks = await this.bookmarkRepository.findByTag(tagName);
+      const bookmarks = await this.bookmarkRepository.findByTag(tagName, userId);
       return bookmarks.map(this._transformToResponse);
     });
 

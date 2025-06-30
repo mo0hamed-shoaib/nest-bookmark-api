@@ -25,9 +25,9 @@ export class BookmarkRepository {
     return result;
   }
 
-  async findAllBookmarks(): Promise<BookmarkDocument[]> {
+  async findAllBookmarks(userId: string): Promise<BookmarkDocument[]> {
     const [error, results] = await tryToCatch(async () => {
-      return this.bookmarkModel.find({}).lean();
+      return this.bookmarkModel.find({ userId }).lean();
     });
 
     if (error) throw error;
@@ -35,9 +35,9 @@ export class BookmarkRepository {
     return results;
   }
 
-  async findById(id: string): Promise<BookmarkDocument | null> {
+  async findById(id: string, userId: string): Promise<BookmarkDocument | null> {
     const [error, result] = await tryToCatch(async () => {
-      return this.bookmarkModel.findOne({ bookmark_id: id }).lean();
+      return this.bookmarkModel.findOne({ bookmark_id: id, userId }).lean();
     });
 
     if (error) throw error;
@@ -48,10 +48,11 @@ export class BookmarkRepository {
   async updateBookmark(
     id: string,
     bookmark: Partial<Bookmark>,
+    userId: string,
   ): Promise<BookmarkDocument | null> {
     const [error, result] = await tryToCatch(async () => {
       return this.bookmarkModel
-        .findOneAndUpdate({ bookmark_id: id }, { ...bookmark }, { new: true })
+        .findOneAndUpdate({ bookmark_id: id, userId }, { ...bookmark }, { new: true })
         .lean();
     });
 
@@ -60,10 +61,10 @@ export class BookmarkRepository {
     return result;
   }
 
-  async deleteBookmark(id: string): Promise<BookmarkDocument | null> {
+  async deleteBookmark(id: string, userId: string): Promise<BookmarkDocument | null> {
     const [error, result] = await tryToCatch(async () => {
       return this.bookmarkModel
-        .findOneAndDelete({ bookmark_id: id }, { new: true })
+        .findOneAndDelete({ bookmark_id: id, userId }, { new: true })
         .lean();
     });
 
@@ -72,9 +73,9 @@ export class BookmarkRepository {
     return result;
   }
 
-  async findByTag(tagName: string): Promise<BookmarkDocument[]> {
+  async findByTag(tagName: string, userId: string): Promise<BookmarkDocument[]> {
     const [error, results] = await tryToCatch(async () => {
-      return this.bookmarkModel.find({ tags: tagName }).lean();
+      return this.bookmarkModel.find({ tags: tagName, userId }).lean();
     });
 
     if (error) throw error;

@@ -71,4 +71,14 @@ export class BookmarkRepository {
 
     return result;
   }
+
+  async findByTag(tagName: string): Promise<BookmarkDocument[]> {
+    const [error, results] = await tryToCatch(async () => {
+      return this.bookmarkModel.find({ tags: tagName }).lean();
+    });
+
+    if (error) throw error;
+
+    return results;
+  }
 }

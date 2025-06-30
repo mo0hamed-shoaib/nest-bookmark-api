@@ -8,6 +8,7 @@ export type Bookmark = {
   tags?: string[];
   createdAt?: Date;
   updatedAt?: Date;
+  userId: string;
 };
 
 /*
@@ -28,6 +29,7 @@ export const bookmarkSchema = new Schema<BookmarkDocument>(
     title: { type: String, required: true },
     description: { type: String },
     tags: { type: [String] }, // Mistake: was type: String['']
+    userId: { type: String, required: true },
     // createdAt: { type: Date }, Mistake: timestamps already adds this + updatedAt
   },
   {

@@ -7,9 +7,19 @@ export type Bookmark = {
   description?: string;
   tags?: string[];
   createdAt?: Date;
+  updatedAt?: Date;
 };
 
-export type BookmarkDocument = Bookmark & Document;
+/*
+FIXME: Because in your base Bookmark type, you wrote:
+createdAt?: Date; // optional, So from TypeScript's perspective, createdAt might be: a Date, or undefined. Calling .toISOString() on a possibly undefined value = ❌ compile-time error.
+*/
+export type BookmarkDocument = Bookmark &
+  Document & { createdAt: Date; updatedAt: Date };
+
+/*
+FIXME: Now createdAt and updatedAt are guaranteed to exist on any BookmarkDocument, which matches what Mongoose does (because timestamps: true always sets them).
+*/
 
 export const bookmarkSchema = new Schema<BookmarkDocument>(
   {

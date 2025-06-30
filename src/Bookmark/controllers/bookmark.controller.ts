@@ -9,6 +9,8 @@ import {
   Post,
   UsePipes,
   Delete,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import {
   BookmarkResponseDto,
@@ -19,27 +21,29 @@ import {
 } from '../dtos';
 import { TypeboxValidationPipe } from '../pipes/typebox-validation.pipe';
 import { BookmarkService } from '../services/bookmark.service';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 
 // Tell Nest that this is Controller
 @Controller('bookmarks')
+@UseGuards(JwtAuthGuard)
 export class BookmarkController {
   constructor(private readonly bookmarkService: BookmarkService) {}
 
   // We are using Pipe for incoming requests
   // GET
   @Get()
-  async getBookmarks(): Promise<BookmarkResponseDto[]> {
-    return this.bookmarkService.getBookmarks();
+  async getBookmarks(@Req() req): Promise<BookmarkResponseDto[]> {
+    return this.bookmarkService.getBookmarks(req.user.userId);
   }
 
   @Get(':id')
-  async getBookmarkById(@Param('id') id: string): Promise<BookmarkResponseDto> {
-    return this.bookmarkService.getBookmarkById(id);
+  async getBookmarkById(@Param('id') id: string, @Req() req): Promise<BookmarkResponseDto> {
+    return this.bookmarkService.getBookmarkById(id, req.user.userId);
   }
 
   @Get('tags/:tagName')
-  async getBookmarksByTag(@Param('tagName') tagName: string): Promise<BookmarkResponseDto[]> {
-    return this.bookmarkService.getBookmarksByTag(tagName);
+  async getBookmarksByTag(@Param('tagName') tagName: string, @Req() req): Promise<BookmarkResponseDto[]> {
+    return this.bookmarkService.getBookmarksByTag(tagName, req.user.userId);
   }
   // ...
 
@@ -49,8 +53,9 @@ export class BookmarkController {
   @UsePipes(new TypeboxValidationPipe(CreateBookmarkSchema))
   async createBookmark(
     @Body() createBookmarkDto: CreateBookmarkDto,
+    @Req() req,
   ): Promise<BookmarkResponseDto> {
-    return this.bookmarkService.createBookmark(createBookmarkDto);
+    return this.bookmarkService.createBookmark(createBookmarkDto, req.user.userId);
   }
   // ...
 
@@ -60,15 +65,16 @@ export class BookmarkController {
   async updateBookmark(
     @Param('id') id: string,
     @Body() updateBookmarkDto: UpdateBookmarkDto,
+    @Req() req,
   ): Promise<BookmarkResponseDto> {
-    return this.bookmarkService.updateBookmark(id, updateBookmarkDto);
+    return this.bookmarkService.updateBookmark(id, updateBookmarkDto, req.user.userId);
   }
   // ...
 
   // DELETE
   @Delete(':id')
-  async deleteBookmark(@Param('id') id: string): Promise<BookmarkResponseDto> {
-    return this.bookmarkService.deleteBookmark(id);
+  async deleteBookmark(@Param('id') id: string, @Req() req): Promise<BookmarkResponseDto> {
+    return this.bookmarkService.deleteBookmark(id, req.user.userId);
   }
   // ...
 }

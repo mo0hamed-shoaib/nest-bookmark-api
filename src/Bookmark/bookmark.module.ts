@@ -6,7 +6,7 @@ import { BOOKMARK_MODEL } from './constants';
 import { BookmarkRepository } from './repositories/bookmark.repository';
 import { BookmarkService } from './services/bookmark.service';
 import { TypeboxValidationPipe } from './pipes/typebox-validation.pipe';
-import { BookmarkController } from './controllers/todo.controller';
+import { BookmarkController } from './controllers/bookmark.controller';
 
 @Module({
   imports: [],

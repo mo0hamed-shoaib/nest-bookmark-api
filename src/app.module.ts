@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongoModule } from './Mongo/mongo.module';
+import { BookmarkModule } from './Bookmark/bookmark.module';
 
 @Module({
   imports: [
@@ -9,6 +10,7 @@ import { MongoModule } from './Mongo/mongo.module';
       envFilePath: '.env',
     }),
     MongoModule,
+    BookmarkModule,
   ],
   controllers: [],
   providers: [],

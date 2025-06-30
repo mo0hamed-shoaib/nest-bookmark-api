@@ -4,12 +4,16 @@ import { createBookmarkModel } from './models/bookmark.model';
 import { DATABASE_CONNECTION_TOKEN } from 'src/Mongo/constants';
 import { BOOKMARK_MODEL } from './constants';
 import { BookmarkRepository } from './repositories/bookmark.repository';
+import { BookmarkService } from './services/bookmark.service';
+import { TypeboxValidationPipe } from './pipes/typebox-validation.pipe';
+import { BookmarkController } from './controllers/todo.controller';
 
 @Module({
   imports: [],
-  controllers: [],
+  controllers: [BookmarkController],
   providers: [
     BookmarkRepository,
+    BookmarkService,
     {
       provide: BOOKMARK_MODEL,
       useFactory: (connection: Connection) =>
